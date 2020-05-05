@@ -1,0 +1,51 @@
+---
+title: "Corona Tracking"
+author: "Abishek Shyamsunder"
+date: "05/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## World Map
+
+This map contains serves to visually represent the number of corona virus cases across the globe.
+The **radius of the red circles vary according to the number of confirmed cases** in the area while the **pop ups give us the number of deaths** as of the date 5/4/20.
+The data was sourced from kaggle: https://www.kaggle.com/imdevskp/corona-virus-report
+
+
+```{r cars, echo=FALSE, warning=FALSE,message=FALSE}
+library(leaflet)
+df<-read.csv('covid_19_clean_complete.csv')
+latest<-df[df$Date=='5/4/20',]
+
+
+pop_up1x = c()
+for(i in 1:264)
+{
+  pop_up1x<-c(pop_up1x,latest[i,7])
+}
+pop_up2x = c()
+for(i in pop_up1x)
+{
+  pop_up2x<-c(pop_up2x,toString(i))
+}
+pop_up3x <- c()
+for(i in pop_up2x)
+{
+  pop_up3x<-c(pop_up3x,paste0("<p>",i))
+}
+pop_up4x <- c()
+for(i in pop_up3x)
+{
+  pop_up4x<-c(pop_up4x,paste0(i,"</p>"))
+}
+
+#latest1 %>% leaflet() %>% addTiles() %>% addMarkers(popup = values)
+
+latest %>% leaflet() %>% addTiles() %>% addCircles(weight = 1, radius = latest$Confirmed,color = "red") %>%  addMarkers(popup = pop_up4x, clusterOptions = markerClusterOptions())
+
+```
+
